@@ -1,0 +1,16 @@
+.sign-in {
+  input {
+    width: 100%;
+  }
+
+  .in-active {
+    opacity: 0.5;
+  }
+}
+
+.card-inputs {
+  margin-top: 16px !important;
+  &:first-child {
+    margin-top: 0;
+  }
+}

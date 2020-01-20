@@ -1,0 +1,20 @@
+.homepage {
+  justify-content: center;
+
+  .avatar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .avatar {
+    border: 1px dashed #e0e0e0;
+    height: 180px;
+    width: 180px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+  }
+}

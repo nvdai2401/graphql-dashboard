@@ -1,30 +1,18 @@
 import React from 'react'
+import { Route, Switch } from 'react-router-dom'
 
-import Button from '@material-ui/core/Button'
+import HomePage from './pages/homepage/homepage.component'
+import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component'
 
-import logo from './logo.svg'
-import './App.css'
+import './App.scss'
 
 function App() {
 	return (
 		<div className='App'>
-			<header className='App-header'>
-				<img src={logo} className='App-logo' alt='logo' />
-				<Button variant='contained' color='primary'>
-					Hello World
-				</Button>
-				<p>
-					Edit <code>src/App.js</code> and save to reload.
-				</p>
-				<a
-					className='App-link'
-					href='https://reactjs.org'
-					target='_blank'
-					rel='noopener noreferrer'
-				>
-					Learn React
-				</a>
-			</header>
+			<Switch>
+				<Route exact path='/' component={HomePage} />
+				<Route exact path='/sign-in' component={SignInAndSignUpPage} />
+			</Switch>
 		</div>
 	)
 }

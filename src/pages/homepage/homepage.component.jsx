@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { makeStyles } from '@material-ui/core/styles'
+import { Mutation, Query } from 'react-apollo'
 import gql from 'graphql-tag'
 
 import {
@@ -69,6 +70,16 @@ const GET_USER = gql`
 		}
 	}
 `
+const UPLOAD_AVATAR = gql`
+	mutation UploadAvatar($file: Upload!) {
+		singleUpload(file: $file) {
+			filename
+			mimetype
+			encoding
+			link
+		}
+	}
+`
 
 const HomePage = () => {
 	const [username, setUsername] = useState('Michael')
@@ -78,6 +89,7 @@ const HomePage = () => {
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [avatar, setAvatar] = useState('')
 	const { loading, error, data } = useQuery(GET_USER)
+	const [uploadAvatar, payload] = useMutation(UPLOAD_AVATAR)
 
 	const {
 		avatarImage,
@@ -112,13 +124,15 @@ const HomePage = () => {
 	}
 
 	const onUpload = ({ target }) => {
-		const fileReader = new FileReader()
-
-		fileReader.readAsDataURL(target.files[0])
-		fileReader.onload = e => {
-			console.log(e.target)
-			setAvatar(e.target.result)
-		}
+		// const fileReader = new FileReader()
+		const file = target.files[0]
+		console.log(Object(file))
+		uploadAvatar({ variables: { file } }).then(data => console.log(data))
+		// fileReader.readAsDataURL(target.files[0])
+		// fileReader.onload = e => {
+		// 	console.log(e.target.files)
+		// 	setAvatar(e.target.files)
+		// }
 	}
 	return (
 		<Container maxWidth='md' className={container}>
@@ -197,7 +211,7 @@ const HomePage = () => {
 									>
 										Upload
 										<input
-											accept='image/*'
+											accept='*'
 											className={uploadingInput}
 											id='uploading-input'
 											onChange={onUpload}

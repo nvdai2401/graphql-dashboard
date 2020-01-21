@@ -1,12 +1,7 @@
 import React, { useState } from 'react'
 import Card from '@material-ui/core/Card'
 import { makeStyles } from '@material-ui/core/styles'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import Button from '@material-ui/core/Button'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
-import Typography from '@material-ui/core/Typography'
-import TextField from '@material-ui/core/TextField'
+import { Button, ButtonGroup } from '@material-ui/core'
 
 import SignIn from '../../components/sign-in/sign-in.component'
 import SignUp from '../../components/sign-up/sign-up.component'
@@ -16,8 +11,12 @@ import './sign-in-and-sign-up.styles.scss'
 const useStyles = makeStyles({
 	cardContainer: {
 		width: 300,
-		margin: '20px auto',
+		margin: '0 auto',
 		padding: 16,
+	},
+	title: {
+		fontSize: 24,
+		fontWeight: 700,
 	},
 	input: {
 		width: '100%',
@@ -31,13 +30,11 @@ const useStyles = makeStyles({
 	},
 })
 
-const SignInAndSignUpPage = () => {
+const SignInAndSignUpPage = ({ location, history }) => {
 	const [currentTab, setcurrentTab] = useState('sign-in')
-	const { cardContainer, input, cardContent, actions } = useStyles()
+	const { cardContainer } = useStyles()
 	return (
 		<div className='sign-in'>
-			<h2>Sign in page</h2>
-
 			<Card className={cardContainer}>
 				<ButtonGroup variant='text' color='primary'>
 					<Button
@@ -53,7 +50,7 @@ const SignInAndSignUpPage = () => {
 						Sign up
 					</Button>
 				</ButtonGroup>
-				{currentTab === 'sign-in' ? <SignIn /> : <SignUp />}
+				{currentTab === 'sign-in' ? <SignIn history={history} /> : <SignUp />}
 			</Card>
 		</div>
 	)

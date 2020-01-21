@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-
+import { useQuery, useMutation } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
 import { makeStyles } from '@material-ui/core/styles'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
+
+import { setToken } from '../../utils'
+
+import { CardActions, CardContent, Button, TextField } from '@material-ui/core'
+
+import Loader from 'components/loader/loader.component'
 
 const useStyles = makeStyles({
 	cardContainer: {
@@ -24,33 +27,56 @@ const useStyles = makeStyles({
 	},
 })
 
-const SignIn = () => {
-	const [username, setUsername] = useState('')
+const LOG_IN = gql`
+	mutation Login($email: String!, $password: String!) {
+		login(email: $email, password: $password) {
+			token
+		}
+	}
+`
+
+const SignIn = ({ history }) => {
+	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const { input, cardContent, actions } = useStyles()
 
+	const [login, authPayload] = useMutation(LOG_IN)
+
 	const signIn = () => {
-		console.log(username, password)
+		login({
+			variables: { email, password },
+		})
+			.then(({ data: { login: token } }) => {
+				console.log(token)
+				if (token) {
+					setToken(token.token)
+					history.push('/')
+				}
+			})
+			.catch(err => console.error(err))
+		console.log(email, password, authPayload)
 	}
+	if (authPayload.loading) return <Loader />
+	// if (authPayload.error) return <p>{authPayload.error}</p>
 
 	return (
 		<React.Fragment>
 			<CardContent className={cardContent}>
 				<TextField
-					id='standard-password-input'
-					value={username}
-					onChange={e => setUsername(e.target.value)}
-					label='Username'
+					value={email}
+					onChange={e => setEmail(e.target.value)}
+					label='Email'
 					type='text'
+					autoFocus
+					autoComplete='true'
 					className={input}
 				/>
 				<TextField
-					id='standard-password-input'
 					value={password}
 					onChange={e => setPassword(e.target.value)}
 					label='Password'
 					type='password'
-					autoComplete='current-password'
+					autoComplete='true'
 					className={input}
 				/>
 			</CardContent>

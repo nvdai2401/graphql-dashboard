@@ -1,10 +1,22 @@
 import React, { useState } from 'react'
-
+import { useQuery, useMutation } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
 import { makeStyles } from '@material-ui/core/styles'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
+
+const CREATE_USER = gql`
+	mutation CreateUser($user: CreateUserInput!) {
+		createUser(user: $user) {
+			_id
+			name
+			age
+			email
+		}
+	}
+`
 
 const useStyles = makeStyles({
 	cardContainer: {
@@ -25,41 +37,34 @@ const useStyles = makeStyles({
 })
 
 const SignUp = () => {
-	const [username, setUsername] = useState('')
+	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
-	const [confirmPassword, setConfirmPassword] = useState('')
+	const [createNewUser, payload] = useMutation(CREATE_USER)
 	const { input, cardContent, actions } = useStyles()
 
 	const signUp = () => {
-		console.log(username, password)
+		console.log(email, password)
+		createNewUser({
+			variables: { email, password },
+		})
 	}
 
 	return (
 		<React.Fragment>
 			<CardContent className={cardContent}>
 				<TextField
-					id='standard-password-input'
-					value={username}
-					onChange={e => setUsername(e.target.value)}
-					label='Username'
+					value={email}
+					onChange={e => setEmail(e.target.value)}
+					label='Email'
 					type='text'
 					className={input}
 				/>
 				<TextField
-					id='standard-password-input'
 					value={password}
 					onChange={e => setPassword(e.target.value)}
 					label='Password'
 					type='password'
 					autoComplete='current-password'
-					className={input}
-				/>
-				<TextField
-					id='standard-password-input'
-					value={confirmPassword}
-					onChange={e => setConfirmPassword(e.target.value)}
-					label='Confirm password'
-					type='password'
 					className={input}
 				/>
 			</CardContent>

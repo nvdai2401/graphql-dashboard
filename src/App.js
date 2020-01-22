@@ -11,7 +11,6 @@ import './App.scss'
 class App extends React.Component {
 	componentDidMount() {
 		this.onRouteChanged()
-		console.log(this.props)
 	}
 	componentDidUpdate(prevProps) {
 		if (this.props.location !== prevProps.location) {
@@ -31,7 +30,7 @@ class App extends React.Component {
 		return (
 			<div className='App'>
 				<Switch>
-					<Route exact path='/' component={HomePage} />
+					<Route exact path='/' component={HomePage} {...this.props} />
 					<Route
 						exact
 						path='/sign-in'

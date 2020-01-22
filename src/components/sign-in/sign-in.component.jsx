@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -47,17 +47,14 @@ const SignIn = ({ history }) => {
 			variables: { email, password },
 		})
 			.then(({ data: { login: token } }) => {
-				console.log(token)
 				if (token) {
 					setToken(token.token)
 					history.push('/')
 				}
 			})
 			.catch(err => console.error(err))
-		console.log(email, password, authPayload)
 	}
 	if (authPayload.loading) return <Loader />
-	// if (authPayload.error) return <p>{authPayload.error}</p>
 
 	return (
 		<React.Fragment>

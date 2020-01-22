@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { makeStyles } from '@material-ui/core/styles'
-import { Mutation, Query } from 'react-apollo'
 import gql from 'graphql-tag'
 
 import {
@@ -16,7 +15,9 @@ import {
 	TextField,
 	IconButton,
 } from '@material-ui/core'
-import { Close, CloudUpload } from '@material-ui/icons'
+import { Close, CloudUpload, ExitToApp } from '@material-ui/icons'
+
+import { deleteToken } from 'utils'
 
 import './homepage.styles.scss'
 
@@ -26,6 +27,14 @@ const useStyles = makeStyles({
 	},
 	card: {
 		minWidth: 600,
+	},
+	cardContent: {
+		position: 'relative',
+	},
+	signOutButton: {
+		position: 'absolute',
+		top: 16,
+		right: 16,
 	},
 	bullet: {
 		display: 'inline-block',
@@ -67,6 +76,7 @@ const GET_USER = gql`
 			name
 			age
 			email
+			avatar
 		}
 	}
 `
@@ -81,66 +91,75 @@ const UPLOAD_AVATAR = gql`
 	}
 `
 
-const HomePage = () => {
-	const [username, setUsername] = useState('Michael')
+const HomePage = ({ history }) => {
+	const [username, setUsername] = useState('')
 	const [age, setAge] = useState('')
 	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('Daiaisd')
+	const [password, setPassword] = useState('')
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [avatar, setAvatar] = useState('')
+
 	const { loading, error, data } = useQuery(GET_USER)
-	const [uploadAvatar, payload] = useMutation(UPLOAD_AVATAR)
+	const [uploadAvatar] = useMutation(UPLOAD_AVATAR)
 
 	const {
 		avatarImage,
 		container,
 		card,
+		cardContent,
+		signOutButton,
 		title,
 		input,
 		uploadingInput,
 		closeImageIcon,
 	} = useStyles()
 
-	console.log(loading, error, data)
-	// if (data && data.me.email !== email) {
-	// 	setUsername(data.me.email)
-	// }
+	useEffect(
+		function() {
+			if (data && !email) {
+				const { name, age, email, avatar } = data.me
+				setUsername(name)
+				setEmail(email)
+				setAge(age)
+				setAvatar(avatar)
+			}
+		},
+		[data, email, error, loading, username]
+	)
 
-	console.log('GET_USER', data, loading, error)
-
-	// useEffect(() => {
-	// 	const { name, age, email } = data.me
-	// 	setAge(age)
-	// 	console.log(age)
-	// }, [age, data.me])
-
-	// if (data) {
-	// 	const { name, age, email } = data.me
-	// 	console.log(data, name, age, email)
-	// 	setAge(age)
-	// }
 	const submitInfo = () => {
 		console.log(username, password)
 	}
 
 	const onUpload = ({ target }) => {
-		// const fileReader = new FileReader()
 		const file = target.files[0]
-		console.log(Object(file))
-		uploadAvatar({ variables: { file } }).then(data => console.log(data))
-		// fileReader.readAsDataURL(target.files[0])
-		// fileReader.onload = e => {
-		// 	console.log(e.target.files)
-		// 	setAvatar(e.target.files)
-		// }
+		uploadAvatar({ variables: { file } }).then(({ data: { singleUpload } }) => {
+			setAvatar(singleUpload.link)
+		})
 	}
+
+	const signOut = () => {
+		deleteToken()
+		history.push('/sign-in')
+	}
+
 	return (
 		<Container maxWidth='md' className={container}>
 			<Card className={card} variant='outlined'>
-				<CardContent>
+				<CardContent className={cardContent}>
 					<Typography className={title} color='primary'>
 						User Information
 					</Typography>
+					<Button
+						variant='contained'
+						color='secondary'
+						component='label'
+						className={signOutButton}
+						endIcon={<ExitToApp />}
+						onClick={signOut}
+					>
+						Sign out
+					</Button>
 					<Grid container spacing={3} className='homepage'>
 						<Grid item xs={8}>
 							<TextField
@@ -211,7 +230,7 @@ const HomePage = () => {
 									>
 										Upload
 										<input
-											accept='*'
+											accept='image/*'
 											className={uploadingInput}
 											id='uploading-input'
 											onChange={onUpload}

@@ -1,16 +1,12 @@
 import React, { useState } from 'react'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+import { CardActions, CardContent, Button, TextField } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
 
 const CREATE_USER = gql`
 	mutation CreateUser($user: CreateUserInput!) {
 		createUser(user: $user) {
-			_id
 			name
 			age
 			email
@@ -36,16 +32,17 @@ const useStyles = makeStyles({
 	},
 })
 
-const SignUp = () => {
+const SignUp = ({ onSignUp }) => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
-	const [createNewUser, payload] = useMutation(CREATE_USER)
+	const [createNewUser] = useMutation(CREATE_USER)
 	const { input, cardContent, actions } = useStyles()
 
 	const signUp = () => {
-		console.log(email, password)
 		createNewUser({
 			variables: { email, password },
+		}).then(() => {
+			onSignUp()
 		})
 	}
 
@@ -58,6 +55,7 @@ const SignUp = () => {
 					label='Email'
 					type='text'
 					className={input}
+					required
 				/>
 				<TextField
 					value={password}
@@ -66,6 +64,7 @@ const SignUp = () => {
 					type='password'
 					autoComplete='current-password'
 					className={input}
+					required
 				/>
 			</CardContent>
 			<CardActions className={actions}>

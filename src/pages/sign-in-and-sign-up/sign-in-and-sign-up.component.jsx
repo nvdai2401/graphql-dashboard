@@ -33,6 +33,10 @@ const useStyles = makeStyles({
 const SignInAndSignUpPage = ({ location, history }) => {
 	const [currentTab, setcurrentTab] = useState('sign-in')
 	const { cardContainer } = useStyles()
+
+	const onSignUp = () => {
+		setcurrentTab('sign-in')
+	}
 	return (
 		<div className='sign-in'>
 			<Card className={cardContainer}>
@@ -50,7 +54,11 @@ const SignInAndSignUpPage = ({ location, history }) => {
 						Sign up
 					</Button>
 				</ButtonGroup>
-				{currentTab === 'sign-in' ? <SignIn history={history} /> : <SignUp />}
+				{currentTab === 'sign-in' ? (
+					<SignIn history={history} />
+				) : (
+					<SignUp onSignUp={onSignUp} />
+				)}
 			</Card>
 		</div>
 	)

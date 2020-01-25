@@ -1,5 +1,5 @@
 # Simple GraphQL Dashboard
-> A simple GraphQL Dashboard where user can Sign in/Sign up and upload avatar. This app uses React, Apollo GraphQL client.
+> A simple GraphQL Dashboard where user can Sign in/Sign up and upload avatar. This app uses React, Apollo GraphQL client and Material UI.
 
 ## Installation guide:
  1. Download zip file or type command in your terminal `git@github.com:nvdai2401/graphql-dashboard.git`
